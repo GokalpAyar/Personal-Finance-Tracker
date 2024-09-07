@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .dashboard, .budget, .expenses, .investments {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #4CAF50;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Personal Finance Tracker</h1>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div class="dashboard">
+            <h2>Dashboard</h2>
+            <p>Welcome to your personal finance tracker. Below is a summary of your financial status.</p>
+            <p><strong>Total Income:</strong> $5000</p>
+            <p><strong>Total Expenses:</strong> $2000</p>
+            <p><strong>Net Balance:</strong> $3000</p>
+        </div>
+
+        <!-- Budget Section -->
+        <div class="budget">
+            <div class="section-header">
+                <h2>Budget</h2>
+                <button id="addBudgetBtn" class="btn">Add Budget</button>
+            </div>
+            <table id="budgetTable">
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Spent</th>
+                    <th>Remaining</th>
+                </tr>
+                <tr>
+                    <td>Food</td>
+                    <td>$500</td>
+                    <td>$300</td>
+                    <td>$200</td>
+                </tr>
+                <!-- More budget items here -->
+            </table>
+        </div>
+
+        <!-- Expenses Section -->
+        <div class="expenses">
+            <div class="section-header">
+                <h2>Expenses</h2>
+                <button id="addExpenseBtn" class="btn">Add Expense</button>
+            </div>
+            <table id="expensesTable">
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+                <tr>
+                    <td>2024-08-01</td>
+                    <td>Food</td>
+                    <td>Grocery Shopping</td>
+                    <td>$100</td>
+                </tr>
+                <tr>
+                    <td>2024-08-05</td>
+                    <td>Rent</td>
+                    <td>August Rent</td>
+                    <td>$1000</td>
+                </tr>
+                <!-- More expenses here -->
+            </table>
+        </div>
+
+        <!-- Investments Section -->
+        <div class="investments">
+            <div class="section-header">
+                <h2>Investments</h2>
+                <button id="addInvestmentBtn" class="btn">Add Investment</button>
+            </div>
+            <table id="investmentsTable">
+                <tr>
+                    <th>Investment</th>
+                    <th>Amount</th>
+                    <th>Current Value</th>
+                    <th>Change</th>
+                </tr>
+                <tr>
+                    <td>Stocks</td>
+                    <td>$2000</td>
+                    <td>$2500</td>
+                    <td>+25%</</td>
+                </tr>
+                <tr>
+                    <td>Mutual Funds</td>
+                    <td>$1000</td>
+                    <td>$1100</td>
+                    <td>+10%</td>
+                </tr>
+                <!-- More investments here -->
+            </table>
+        </div>
+    </div>
+
+    <!-- Budget Modal -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Budget</h2>
+            <form id="budgetForm">
+                <label for="category">Category:</label><br>
+                <input type="text" id="category" name="category" required><br><br>
+                <label for="amount">Amount:</label><br>
+                <input type="number" id="amount" name="amount" required><br><br>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Expense Modal -->
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Expense</h2>
+            <form id="expenseForm">
+                <label for="expenseDate">Date:</label><br>
+                <input type="date" id="expenseDate" name="expenseDate" required><br><br>
+                <label for="expenseCategory">Category:</label><br>
+                <input type="text" id="expenseCategory" name="expenseCategory" required><br><br>
+                <label for="expenseDescription">Description:</label><br>
+                <input type="text" id="expenseDescription" name="expenseDescription" required><br><br>
+                <label for="expenseAmount">Amount:</label><br>
+                <input type="number" id="expenseAmount" name="expenseAmount" required><br><br>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Investment Modal -->
+    <div id="investmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Investment</h2>
+            <form id="investmentForm">
+                <label for="investmentType">Investment Type:</label><br>
+                <input type="text" id="investmentType" name="investmentType" required><br><br>
+                <label for="investmentAmount">Amount:</label><br>
+                <input type="number" id="investmentAmount" name="investmentAmount" required><br><br>
+                <label for="investmentValue">Current Value:</label><br>
+                <input type="number" id="investmentValue" name="investmentValue" required><br><br>
+                <label for="investmentChange">Change (%):</label><br>
+                <input type="number" id="investmentChange" name="investmentChange" required><br><br>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Budget Modal
+        var budgetModal = document.getElementById("budgetModal");
+        var addBudgetBtn = document.getElementById("addBudgetBtn");
+        var budgetCloseBtn = budgetModal.getElementsByClassName("close")[0];
+
+        addBudgetBtn.onclick = function() {
+            budgetModal.style.display = "block";
+        }
+
+        budgetCloseBtn.onclick = function() {
+            budgetModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == budgetModal) {
+                budgetModal.style.display = "none";
+            }
+        }
+
+        document.getElementById("budgetForm").onsubmit = function(event) {
+            event.preventDefault();
+            var category = document.getElementById("category").value;
+            var amount = document.getElementById("amount").value;
+
+            var table = document.getElementById("budgetTable");
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+
+            cell1.innerHTML = category;
+            cell2.innerHTML = "$" + amount;
+            cell3.innerHTML = "$0";
+            cell4.innerHTML = "$" + amount;
+
+            document.getElementById("budgetForm").reset();
+            budgetModal.style.display = "none";
+        }
+
+        // Expense Modal
+        var expenseModal = document.getElementById("expenseModal");
+        var addExpenseBtn = document.getElementById("addExpenseBtn");
+        var expenseCloseBtn = expenseModal.getElementsByClassName("close")[0];
+
+        addExpenseBtn.onclick = function() {
+            expenseModal.style.display = "block";
+        }
+
+        expenseCloseBtn.onclick = function() {
+            expenseModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == expenseModal) {
+                expenseModal.style.display = "none";
+            }
+        }
+
+        document.getElementById("expenseForm").onsubmit = function(event) {
+            event.preventDefault();
+            var date = document.getElementById("expenseDate").value;
+            var category = document.getElementById("expenseCategory").value;
+            var description = document.getElementById("expenseDescription").value;
+            var amount = document.getElementById("expenseAmount").value;
+
+            var table = document.getElementById("expensesTable");
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+
+            cell1.innerHTML = date;
+            cell2.innerHTML = category;
+            cell3.innerHTML = description;
+            cell4.innerHTML = "$" + amount;
+
+            document.getElementById("expenseForm").reset();
+            expenseModal.style.display = "none";
+        }
+
+        // Investment Modal
+        var investmentModal = document.getElementById("investmentModal");
+        var addInvestmentBtn = document.getElementById("addInvestmentBtn");
+        var investmentCloseBtn = investmentModal.getElementsByClassName("close")[0];
+
+        addInvestmentBtn.onclick = function() {
+            investmentModal.style.display = "block";
+        }
+
+        investmentCloseBtn.onclick = function() {
+            investmentModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == investmentModal) {
+                investmentModal.style.display = "none";
+            }
+        }
+
+        document.getElementById("investmentForm").onsubmit = function(event) {
+            event.preventDefault();
+            var type = document.getElementById("investmentType").value;
+            var amount = document.getElementById("investmentAmount").value;
+            var value = document.getElementById("investmentValue").value;
+            var change = document.getElementById("investmentChange").value;
+
+            var table = document.getElementById("investmentsTable");
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+
+            cell1.innerHTML = type;
+            cell2.innerHTML = "$" + amount;
+            cell3.innerHTML = "$" + value;
+            cell4.innerHTML = change + "%";
+
+            document.getElementById("investmentForm").reset();
+            investmentModal.style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
